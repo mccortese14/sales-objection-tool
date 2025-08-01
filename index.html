@@ -1,9 +1,123 @@
-[Landing Page] → [Sign Up] → [Profile Setup]
-                                      ↓
-                         [Objection Handler Tool]
-                                      ↓
-                            [Testing/Practice Area]
-                                      ↓
-                        [User Dashboard + History]
-						
-						
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Sales Objection Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7fa;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #004aad;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 1rem;
+    }
+    select, input[type="text"], textarea {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 1.5rem;
+      background-color: #004aad;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    #results {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #e9f3ff;
+      border-left: 4px solid #004aad;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI Sales Objection Handling Tool</h1>
+    <p>Customized rebuttals based on your profile and objections</p>
+  </header>
+
+  <div class="container">
+    <label for="industry">Industry</label>
+    <select id="industry">
+      <option value="solar">Solar</option>
+      <option value="real-estate">Real Estate</option>
+      <option value="saas">SaaS</option>
+    </select>
+
+    <label for="customerPersonality">Customer Personality</label>
+    <select id="customerPersonality">
+      <option value="analytical">Analytical</option>
+      <option value="emotional">Emotional</option>
+      <option value="skeptical">Skeptical</option>
+      <option value="dominant">Dominant</option>
+    </select>
+
+    <label for="repStyle">Sales Rep Personality</label>
+    <select id="repStyle">
+      <option value="consultative">Consultative</option>
+      <option value="assertive">Assertive</option>
+      <option value="relationship">Relationship-driven</option>
+    </select>
+
+    <label for="objection">Customer Objection</label>
+    <input type="text" id="objection" placeholder="e.g., It's too expensive" />
+
+    <button onclick="generateResponse()">Generate Rebuttals</button>
+
+    <div id="results"></div>
+  </div>
+
+  <script>
+    async function generateResponse() {
+      const industry = document.getElementById("industry").value;
+      const customerPersonality = document.getElementById("customerPersonality").value;
+      const repStyle = document.getElementById("repStyle").value;
+      const objection = document.getElementById("objection").value;
+
+      const responseDiv = document.getElementById("results");
+      responseDiv.innerHTML = `<p><em>Generating response...</em></p>`;
+
+      setTimeout(() => {
+        responseDiv.innerHTML = `
+          <strong>Direct and Confident:</strong><br>
+          "I understand. But if I can show you that this will pay for itself in under 7 years, would you be open to moving forward?"<br><br>
+
+          <strong>Consultative and Soft:</strong><br>
+          "Totally fair. What part are you unsure about? Let’s walk through it together."<br><br>
+
+          <strong>Story-Based:</strong><br>
+          "Another customer said the same thing last week — after we broke it down together, they realized the savings made it a no-brainer."<br><br>
+
+          <strong>Psychological Insight:</strong> Analytical customers need logical proof and time to process.<br>
+          <strong>Follow-up Question:</strong> “Would a comparison chart help you feel more confident in your decision?”
+        `;
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
