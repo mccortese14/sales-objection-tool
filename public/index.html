@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Sales Objection Tool - ChatGPT Powered</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+    }
+    
+    header {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      font-weight: 300;
+    }
+    
+    header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+    }
+    
+    .card h2 {
+      color: #4a5568;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #4a5568;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    select, input[type="text"], textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: 8px;
+      border: 2px solid #e2e8f0;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+    
+    select:focus, input[type="text"]:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .profile-info {
+      background: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      border-left: 4px solid #667eea;
+    }
+    
+    .profile-info h3 {
+      color: #667eea;
+      margin-bottom: 1rem;
+    }
+    
+    .profile-detail {
+      margin-bottom: 0.8rem;
+      font-size: 0.9rem;
+    }
+    
+    .profile-detail strong {
+      color: #4a5568;
+      display: inline-block;
+      width: 120px;
+    }
+    
+    .expertise-tags, .traits-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .tag {
+      background: #667eea;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    
+    #results {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      margin-top: 2rem;
+      grid-column: 1 / -1;
+    }
+    
+    .response-section {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      border-radius: 10px;
+      border-left: 4px solid #667eea;
+    }
+    
+    .response-section h3 {
+      color: #667eea;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+    
+    .response-section p {
+      line-height: 1.6;
+      color: #4a5568;
+    }
+    
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      color: #667eea;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #e2e8f0;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 1rem;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .error {
+      background: #fed7d7;
+      color: #c53030;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      border-left: 4px solid #c53030;
+    }
+    
+    .success-indicator {
+      background: #c6f6d5;
+      color: #22543d;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      border-left: 4px solid #22543d;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+        margin: 1rem auto;
+        padding: 0 1rem;
+      }
+      
+      header h1 {
+        font-size: 2rem;
+      }
+      
+      .card {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI Sales Objection Tool</h1>
+    <p>ChatGPT-powered responses tailored to your industry and sales style</p>
+  </header>
+
+  <div class="container">
+    <!-- Left Column: Input Form -->
+    <div class="card">
+      <h2>🎯 Objection Details</h2>
+      
+      <div class="form-group">
+        <label for="industry">Industry Profile</label>
+        <select id="industry" onchange="loadProfile()">
+          <option value="solar">Solar Energy</option>
+          <option value="realEstate">Real Estate</option>
+          <option value="saas">SaaS Technology</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="customerPersonality">Customer Personality</label>
+        <select id="customerPersonality">
+          <option value="analytical">Analytical - Data-driven, logical</option>
+          <option value="emotional">Emotional - Feeling-based decisions</option>
+          <option value="skeptical">Skeptical - Needs proof and trust</option>
+          <option value="dominant">Dominant - Direct and assertive</option>
+          <option value="mixed">Mixed - Combination of traits</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="objection">Customer Objection</label>
+        <textarea id="objection" placeholder="Enter the exact objection or concern the customer raised..."></textarea>
+      </div>
+
+      <button onclick="generateResponse()" id="generateBtn">
+        Generate AI Response
+      </button>
+    </div>
+
+    <!-- Right Column: Profile Information -->
+    <div class="card">
+      <h2>👤 Your Sales Profile</h2>
+      <div id="profileInfo">
+        <p>Select an industry to view your sales profile...</p>
+      </div>
+    </div>
+
+    <!-- Full Width Results -->
+    <div id="results" style="display: none;"></div>
+  </div>
+
+  <script>
+    let profiles = {};
+    let currentProfile = null;
+
+    // Load profiles when page loads
+    window.onload = function() {
+      loadProfiles();
+      loadProfile(); // Load default profile
+    };
+
+    async function loadProfiles() {
+      try {
+        const response = await fetch('/api/profiles');
+        profiles = await response.json();
+      } catch (error) {
+        console.error('Error loading profiles:', error);
+      }
+    }
+
+    function loadProfile() {
+      const industry = document.getElementById("industry").value;
+      currentProfile = profiles[industry];
+      
+      if (currentProfile) {
+        displayProfile(currentProfile);
+      }
+    }
+
+    function displayProfile(profile) {
+      const profileDiv = document.getElementById("profileInfo");
+      
+      profileDiv.innerHTML = `
+        <div class="profile-info">
+          <h3>${profile.name}</h3>
+          
+          <div class="profile-detail">
+            <strong>Experience:</strong> ${profile.experience}
+          </div>
+          
+          <div class="profile-detail">
+            <strong>Industry:</strong> ${profile.industry}
+          </div>
+          
+          <div class="profile-detail">
+            <strong>Sales Style:</strong> ${profile.salesStyle}
+          </div>
+          
+          <div class="profile-detail">
+            <strong>Value Prop:</strong> ${profile.valueProposition}
+          </div>
+          
+          <div class="profile-detail">
+            <strong>Personality:</strong>
+            <div class="traits-tags">
+              ${profile.personalityTraits.map(trait => `<span class="tag">${trait}</span>`).join('')}
+            </div>
+          </div>
+          
+          <div class="profile-detail">
+            <strong>Expertise:</strong>
+            <div class="expertise-tags">
+              ${profile.expertise.slice(0, 3).map(skill => `<span class="tag">${skill}</span>`).join('')}
+              ${profile.expertise.length > 3 ? '<span class="tag">+' + (profile.expertise.length - 3) + ' more</span>' : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function generateResponse() {
+      const industry = document.getElementById("industry").value;
+      const customerPersonality = document.getElementById("customerPersonality").value;
+      const objection = document.getElementById("objection").value.trim();
+      
+      if (!objection) {
+        alert('Please enter a customer objection first.');
+        return;
+      }
+
+      const generateBtn = document.getElementById("generateBtn");
+      const resultsDiv = document.getElementById("results");
+      
+      // Show loading state
+      generateBtn.disabled = true;
+      generateBtn.textContent = 'Generating...';
+      resultsDiv.style.display = 'block';
+      resultsDiv.innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          <div>
+            <h3>ChatGPT is analyzing your objection...</h3>
+            <p>Creating a personalized response based on your ${currentProfile?.name || industry} profile</p>
+          </div>
+        </div>
+      `;
+
+      try {
+        const response = await fetch('/api/generate-response', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            industry,
+            objection,
+            customerPersonality
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to generate response');
+        }
+
+        displayResponse(data.response, data.profile, objection, customerPersonality);
+
+      } catch (error) {
+        console.error('Error generating response:', error);
+        resultsDiv.innerHTML = `
+          <div class="error">
+            <h3>⚠️ Error Generating Response</h3>
+            <p><strong>Error:</strong> ${error.message}</p>
+            <p><strong>Troubleshooting:</strong></p>
+            <ul>
+              <li>Make sure the server is running (npm start)</li>
+              <li>Check that your OpenAI API key is set in the .env file</li>
+              <li>Verify your internet connection</li>
+            </ul>
+          </div>
+        `;
+      } finally {
+        generateBtn.disabled = false;
+        generateBtn.textContent = 'Generate AI Response';
+      }
+    }
+
+    function displayResponse(aiResponse, profileInfo, objection, customerPersonality) {
+      const resultsDiv = document.getElementById("results");
+      
+      // Parse the AI response to extract sections
+      const sections = parseAIResponse(aiResponse);
+      
+      resultsDiv.innerHTML = `
+        <div class="success-indicator">
+          ✅ Response generated successfully using ChatGPT-4 for ${profileInfo.name}
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+          <div>
+            <h2>🤖 AI-Generated Objection Response</h2>
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid #28a745;">
+              <strong>Customer said:</strong> "${objection}"<br>
+              <strong>Customer type:</strong> ${customerPersonality}<br>
+              <strong>Your profile:</strong> ${profileInfo.name} (${profileInfo.salesStyle} style)
+            </div>
+            ${sections}
+          </div>
+          
+          <div>
+            <h3>💡 Quick Tips</h3>
+            <div style="background: #fff3cd; padding: 1rem; border-radius: 8px; border-left: 4px solid #ffc107;">
+              <ul style="margin: 0; padding-left: 1.2rem;">
+                <li>Listen actively and acknowledge their concern</li>
+                <li>Use the exact words provided by ChatGPT</li>
+                <li>Adjust your tone to match the customer personality</li>
+                <li>Follow up with the suggested closing question</li>
+              </ul>
+            </div>
+            
+            <button onclick="generateResponse()" style="margin-top: 1rem; font-size: 0.9rem; padding: 0.6rem 1rem;">
+              🔄 Generate New Response
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function parseAIResponse(response) {
+      // Split response into sections based on headers
+      const sections = response.split(/\*\*(.*?)\*\*/g);
+      let parsedHTML = '';
+      
+      for (let i = 0; i < sections.length; i += 2) {
+        const content = sections[i].trim();
+        const header = sections[i + 1];
+        
+        if (content && content.length > 10) {
+          const sectionClass = header ? 'response-section' : '';
+          parsedHTML += `
+            <div class="${sectionClass}">
+              ${header ? `<h3>${header}</h3>` : ''}
+              <p>${content.replace(/\n/g, '<br>')}</p>
+            </div>
+          `;
+        }
+      }
+      
+      // If parsing fails, return the raw response
+      if (!parsedHTML.trim()) {
+        parsedHTML = `
+          <div class="response-section">
+            <h3>ChatGPT Response</h3>
+            <p>${response.replace(/\n/g, '<br>')}</p>
+          </div>
+        `;
+      }
+      
+      return parsedHTML;
+    }
+
+    // Add keyboard shortcut for generating response
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') {
+        generateResponse();
+      }
+    });
+  </script>
+</body>
+</html>
