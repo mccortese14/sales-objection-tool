@@ -4,120 +4,603 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AI Sales Objection Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f7fa;
+    :root {
+      --primary-color: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #a5b4fc;
+      --secondary-color: #f1f5f9;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --border-color: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .background-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.1;
+      background-image: 
+        radial-gradient(circle at 25% 25%, white 2px, transparent 2px),
+        radial-gradient(circle at 75% 75%, white 2px, transparent 2px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
     header {
-      background-color: #004aad;
-      color: white;
-      padding: 1rem 2rem;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 2rem 0;
       text-align: center;
+      position: relative;
+      z-index: 1;
+      box-shadow: var(--shadow);
     }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .header-icon {
+      width: 60px;
+      height: 60px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+      color: white;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
     .container {
       max-width: 900px;
-      margin: 2rem auto;
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin: 3rem auto;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 3rem;
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      z-index: 1;
     }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
     label {
-      font-weight: bold;
-      display: block;
-      margin-top: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
+
     select, input[type="text"], textarea {
       width: 100%;
-      padding: 0.6rem;
-      margin-top: 0.5rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+      padding: 1rem;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      background: white;
     }
-    button {
-      margin-top: 1.5rem;
-      background-color: #004aad;
+
+    select:focus, input[type="text"]:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .objection-input {
+      grid-column: 1 / -1;
+    }
+
+    .objection-input input {
+      font-size: 1.1rem;
+      padding: 1.2rem;
+    }
+
+    .generate-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
       color: white;
       border: none;
-      padding: 0.8rem 1.5rem;
-      border-radius: 6px;
-      font-size: 1rem;
+      padding: 1.2rem 2rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
       cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+      position: relative;
+      overflow: hidden;
     }
+
+    .generate-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .generate-btn:active {
+      transform: translateY(0);
+    }
+
+    .generate-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-text {
+      transition: opacity 0.3s ease;
+    }
+
+    .btn-loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .generate-btn.loading .btn-text {
+      opacity: 0;
+    }
+
+    .generate-btn.loading .btn-loading {
+      opacity: 1;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
     #results {
       margin-top: 2rem;
+      padding: 0;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+
+    #results.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .response-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+      border-left: 4px solid var(--primary-color);
+      transition: all 0.3s ease;
+    }
+
+    .response-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .response-type {
+      font-weight: 700;
+      color: var(--primary-color);
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .response-text {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
       padding: 1rem;
-      background: #e9f3ff;
-      border-left: 4px solid #004aad;
+      background: var(--secondary-color);
+      border-radius: 8px;
+      font-style: italic;
+    }
+
+    .insight-section {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .insight-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .insight-text {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .copy-btn {
+      background: var(--secondary-color);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .copy-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border-color: var(--primary-color);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        margin: 2rem 1rem;
+        padding: 2rem 1.5rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .header-content {
+        padding: 0 1rem;
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
+  <div class="background-pattern"></div>
+  
   <header>
-    <h1>AI Sales Objection Handling Tool</h1>
-    <p>Customized rebuttals based on your profile and objections</p>
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="fas fa-brain"></i>
+      </div>
+      <h1>AI Sales Objection Tool</h1>
+      <p class="subtitle">Generate customized rebuttals based on your profile and customer objections</p>
+    </div>
   </header>
 
-  <div class="container">
-    <label for="industry">Industry</label>
-    <select id="industry">
-      <option value="solar">Solar</option>
-      <option value="real-estate">Real Estate</option>
-      <option value="saas">SaaS</option>
-    </select>
+  <div class="container fade-in">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="industry"><i class="fas fa-industry"></i> Industry</label>
+        <select id="industry">
+          <option value="solar">☀️ Solar Energy</option>
+          <option value="real-estate">🏠 Real Estate</option>
+          <option value="saas">💻 SaaS Technology</option>
+          <option value="healthcare">🏥 Healthcare</option>
+          <option value="finance">💰 Finance</option>
+          <option value="automotive">🚗 Automotive</option>
+        </select>
+      </div>
 
-    <label for="customerPersonality">Customer Personality</label>
-    <select id="customerPersonality">
-      <option value="analytical">Analytical</option>
-      <option value="emotional">Emotional</option>
-      <option value="skeptical">Skeptical</option>
-      <option value="dominant">Dominant</option>
-    </select>
+      <div class="form-group">
+        <label for="customerPersonality"><i class="fas fa-user"></i> Customer Type</label>
+        <select id="customerPersonality">
+          <option value="analytical">📊 Analytical</option>
+          <option value="emotional">❤️ Emotional</option>
+          <option value="skeptical">🤔 Skeptical</option>
+          <option value="dominant">💪 Dominant</option>
+          <option value="social">👥 Social</option>
+          <option value="conservative">🛡️ Conservative</option>
+        </select>
+      </div>
 
-    <label for="repStyle">Sales Rep Personality</label>
-    <select id="repStyle">
-      <option value="consultative">Consultative</option>
-      <option value="assertive">Assertive</option>
-      <option value="relationship">Relationship-driven</option>
-    </select>
+      <div class="form-group">
+        <label for="repStyle"><i class="fas fa-handshake"></i> Your Sales Style</label>
+        <select id="repStyle">
+          <option value="consultative">🤝 Consultative</option>
+          <option value="assertive">⚡ Assertive</option>
+          <option value="relationship">💝 Relationship-driven</option>
+          <option value="technical">🔧 Technical Expert</option>
+          <option value="storyteller">📖 Storyteller</option>
+        </select>
+      </div>
 
-    <label for="objection">Customer Objection</label>
-    <input type="text" id="objection" placeholder="e.g., It's too expensive" />
+      <div class="form-group objection-input">
+        <label for="objection"><i class="fas fa-comment"></i> Customer Objection</label>
+        <input type="text" id="objection" placeholder="e.g., 'It's too expensive' or 'I need to think about it'" />
+      </div>
+    </div>
 
-    <button onclick="generateResponse()">Generate Rebuttals</button>
+    <button class="generate-btn" onclick="generateResponse()">
+      <span class="btn-text">
+        <i class="fas fa-magic"></i>
+        Generate Smart Rebuttals
+      </span>
+      <div class="btn-loading">
+        <div class="spinner"></div>
+      </div>
+    </button>
 
     <div id="results"></div>
   </div>
 
   <script>
+    const responses = {
+      "too expensive": {
+        direct: "I understand cost is a concern. What if I could show you how this pays for itself within the first year?",
+        consultative: "Help me understand - what would make the investment feel more comfortable for you?",
+        story: "I had another client say the exact same thing. After we broke down the ROI, they realized it actually saved them money from day one.",
+        insight: "Price objections often mask value concerns. Focus on ROI and payment options."
+      },
+      "need to think": {
+        direct: "I respect that. What specific aspect would you like to think through? Maybe I can help clarify.",
+        consultative: "Of course, this is an important decision. What questions can I answer to help with your thinking?",
+        story: "Smart approach! My best clients always think things through. What would help you feel confident moving forward?",
+        insight: "This usually indicates they need more information or have concerns they haven't voiced."
+      },
+      "not interested": {
+        direct: "I understand. May I ask what would need to change for this to be interesting to you?",
+        consultative: "That's fair. Help me understand - is it the timing, the solution, or something else?",
+        story: "No worries at all. Many of my best clients started by saying the same thing. What would it take to change your mind?",
+        insight: "Often means they don't see the value yet. Dig deeper to understand their real needs."
+      }
+    };
+
+    function findBestResponse(objection) {
+      const lowerObj = objection.toLowerCase();
+      
+      if (lowerObj.includes('expensive') || lowerObj.includes('cost') || lowerObj.includes('price') || lowerObj.includes('money')) {
+        return responses["too expensive"];
+      } else if (lowerObj.includes('think') || lowerObj.includes('consider') || lowerObj.includes('decide')) {
+        return responses["need to think"];
+      } else if (lowerObj.includes('not interested') || lowerObj.includes('no thanks') || lowerObj.includes('not for me')) {
+        return responses["not interested"];
+      }
+      
+      // Default response for other objections
+      return {
+        direct: "I hear you. Can you help me understand what's behind that concern?",
+        consultative: "That's a valid point. What would need to happen for you to feel differently about this?",
+        story: "I've heard that before, and I'm glad you brought it up. Let me share how others have handled this same concern.",
+        insight: "Every objection is an opportunity to better understand your prospect's needs and concerns."
+      };
+    }
+
+    function getPersonalityInsight(personality) {
+      const insights = {
+        analytical: "Analytical customers need data, proof, and logical reasoning. Provide specific numbers and case studies.",
+        emotional: "Emotional buyers respond to stories, benefits to others, and how it makes them feel. Use testimonials.",
+        skeptical: "Skeptical prospects need credibility builders, guarantees, and social proof. Address concerns directly.",
+        dominant: "Dominant personalities want control and quick decisions. Be direct, confident, and results-focused.",
+        social: "Social types value relationships and peer approval. Use testimonials and emphasize community benefits.",
+        conservative: "Conservative buyers need time, guarantees, and proven track records. Emphasize stability and risk reduction."
+      };
+      return insights[personality] || "Adapt your approach based on their communication style and concerns.";
+    }
+
+    function getIndustryContext(industry) {
+      const contexts = {
+        solar: "Focus on energy savings, environmental benefits, and long-term ROI.",
+        "real-estate": "Emphasize market timing, investment potential, and lifestyle benefits.",
+        saas: "Highlight efficiency gains, scalability, and competitive advantages.",
+        healthcare: "Stress patient outcomes, compliance benefits, and operational efficiency.",
+        finance: "Focus on risk mitigation, regulatory compliance, and ROI.",
+        automotive: "Emphasize reliability, performance, and total cost of ownership."
+      };
+      return contexts[industry] || "Tailor your message to industry-specific pain points and benefits.";
+    }
+
     async function generateResponse() {
       const industry = document.getElementById("industry").value;
       const customerPersonality = document.getElementById("customerPersonality").value;
       const repStyle = document.getElementById("repStyle").value;
-      const objection = document.getElementById("objection").value;
+      const objection = document.getElementById("objection").value.trim();
 
-      const responseDiv = document.getElementById("results");
-      responseDiv.innerHTML = `<p><em>Generating response...</em></p>`;
+      if (!objection) {
+        alert("Please enter a customer objection first!");
+        return;
+      }
 
+      const button = document.querySelector('.generate-btn');
+      const resultsDiv = document.getElementById("results");
+      
+      // Show loading state
+      button.classList.add('loading');
+      button.disabled = true;
+      resultsDiv.classList.remove('show');
+
+      // Simulate AI processing time
       setTimeout(() => {
-        responseDiv.innerHTML = `
-          <strong>Direct and Confident:</strong><br>
-          "I understand. But if I can show you that this will pay for itself in under 7 years, would you be open to moving forward?"<br><br>
+        const responseSet = findBestResponse(objection);
+        const personalityInsight = getPersonalityInsight(customerPersonality);
+        const industryContext = getIndustryContext(industry);
 
-          <strong>Consultative and Soft:</strong><br>
-          "Totally fair. What part are you unsure about? Let’s walk through it together."<br><br>
+        resultsDiv.innerHTML = `
+          <div class="response-card">
+            <div class="response-type">
+              <i class="fas fa-bolt"></i>
+              Direct & Confident Approach
+            </div>
+            <div class="response-text">"${responseSet.direct}"</div>
+            <button class="copy-btn" onclick="copyToClipboard(this, '${responseSet.direct}')">
+              <i class="fas fa-copy"></i> Copy Response
+            </button>
+          </div>
 
-          <strong>Story-Based:</strong><br>
-          "Another customer said the same thing last week — after we broke it down together, they realized the savings made it a no-brainer."<br><br>
+          <div class="response-card">
+            <div class="response-type">
+              <i class="fas fa-comments"></i>
+              Consultative & Collaborative
+            </div>
+            <div class="response-text">"${responseSet.consultative}"</div>
+            <button class="copy-btn" onclick="copyToClipboard(this, '${responseSet.consultative}')">
+              <i class="fas fa-copy"></i> Copy Response
+            </button>
+          </div>
 
-          <strong>Psychological Insight:</strong> Analytical customers need logical proof and time to process.<br>
-          <strong>Follow-up Question:</strong> “Would a comparison chart help you feel more confident in your decision?”
+          <div class="response-card">
+            <div class="response-type">
+              <i class="fas fa-book-open"></i>
+              Story-Based Approach
+            </div>
+            <div class="response-text">"${responseSet.story}"</div>
+            <button class="copy-btn" onclick="copyToClipboard(this, '${responseSet.story}')">
+              <i class="fas fa-copy"></i> Copy Response
+            </button>
+          </div>
+
+          <div class="insight-section">
+            <div class="insight-title">
+              <i class="fas fa-lightbulb"></i>
+              Psychological Insight
+            </div>
+            <div class="insight-text">${responseSet.insight}</div>
+          </div>
+
+          <div class="insight-section">
+            <div class="insight-title">
+              <i class="fas fa-user-tie"></i>
+              Customer Personality (${customerPersonality})
+            </div>
+            <div class="insight-text">${personalityInsight}</div>
+          </div>
+
+          <div class="insight-section">
+            <div class="insight-title">
+              <i class="fas fa-industry"></i>
+              Industry Context (${industry})
+            </div>
+            <div class="insight-text">${industryContext}</div>
+          </div>
         `;
-      }, 1500);
+
+        // Show results with animation
+        resultsDiv.classList.add('show');
+        
+        // Reset button
+        button.classList.remove('loading');
+        button.disabled = false;
+      }, 2000);
     }
+
+    function copyToClipboard(button, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        button.style.background = 'var(--success-color)';
+        button.style.color = 'white';
+        
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.style.background = '';
+          button.style.color = '';
+        }, 2000);
+      });
+    }
+
+    // Add enter key support for objection input
+    document.getElementById('objection').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        generateResponse();
+      }
+    });
+
+    // Add form validation
+    document.getElementById('objection').addEventListener('input', function(e) {
+      const button = document.querySelector('.generate-btn');
+      if (e.target.value.trim()) {
+        button.style.opacity = '1';
+      } else {
+        button.style.opacity = '0.7';
+      }
+    });
   </script>
 </body>
 </html>
