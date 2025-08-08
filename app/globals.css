@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .cocktail-card {
+    @apply bg-white rounded-xl shadow-lg p-6 border border-cocktail-primary/10 hover:shadow-xl transition-shadow duration-300;
+  }
+  
+  .ingredient-tag {
+    @apply bg-cocktail-primary/10 text-cocktail-primary px-3 py-1 rounded-full text-sm font-medium;
+  }
+  
+  .btn-primary {
+    @apply bg-cocktail-primary hover:bg-cocktail-primary/90 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg;
+  }
+  
+  .btn-secondary {
+    @apply bg-cocktail-secondary hover:bg-cocktail-secondary/90 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg;
+  }
+  
+  .camera-button {
+    @apply bg-gradient-to-r from-cocktail-primary to-cocktail-secondary hover:from-cocktail-primary/90 hover:to-cocktail-secondary/90 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105;
+  }
+}
